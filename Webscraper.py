@@ -2,6 +2,7 @@ import urllib
 import bs4
 import re
 from urllib.request import urlopen as uReq
+from urllib.parse import quote
 from bs4 import BeautifulSoup as soup
 
 
@@ -14,6 +15,7 @@ uClient.close()
 filename = "KursutbudBME.csv"
 f = open(filename, "w")
 
+print(page_soup.original_encoding)
 for table in page_soup.find_all('table', class_="CourseListView border hover lighter_table_head zebra"):
     for container in table.find_all('tr'):
 
@@ -28,6 +30,7 @@ for table in page_soup.find_all('table', class_="CourseListView border hover lig
         
         f.write(course_code + ",")
         
+        
         course_title_container = container.find('td', width='250')
         try:
             course_title = course_title_container.text.replace(",", "|")
@@ -36,10 +39,11 @@ for table in page_soup.find_all('table', class_="CourseListView border hover lig
             course_title = "None"
         f.write(course_title + ",")
 
+
         points = container.find_all('td', class_="mitt")
         for point in points:
-            f.write(point.text.replace(",", ".") + ",")
-
+            f.write(point.text.replace(",", ".").replace("\n", "") + ",")
+            print(point.text.replace(",", ".") + ",")
         lps = container.find_all('span', class_="ttinfo")
         
         for lp in lps:
