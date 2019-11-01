@@ -11,22 +11,42 @@ page_url = 'https://kurser.lth.se/lot/?val=program&prog=BME'
 uClient = uReq(page_url)
 page_soup = soup(uClient.read(), 'html.parser')
 uClient.close()
-
-
+filename = "KursutbudBME.csv"
+f = open(filename, "w")
 
 for table in page_soup.find_all('table', class_="CourseListView border hover lighter_table_head zebra"):
     for container in table.find_all('tr'):
 
-        course_code = container.find('a').string
-        course_title = container.find('td', width='250')
-        print(course_code)
-        print(course_title)
+
+        #Must fix so the a-, and td-tags texts are extracted
+        course_code_container = container.find('a')
+        try:
+            course_code = course_code_container.text
+            
+        except:
+            course_code = "None"
+        
+        f.write(course_code + ",")
+        
+        course_title_container = container.find('td', width='250')
+        try:
+            course_title = course_title_container.text
+        
+        except:
+            course_title = "None"
+        f.write(course_title + ",")
 
         points = container.find_all('td', class_="mitt")
         for point in points:
-            print(point.text)
+            f.write(point.text + ",")
 
         lps = container.find_all('span', class_="ttinfo")
+        
         for lp in lps:
-            print(lp.strong.text)
+            period = lp.find_all('strong')
+            f.write(period[0].text + ",")
+        f.write("\n")
+        
 
+f.close()
+print("done")
