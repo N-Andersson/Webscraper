@@ -30,7 +30,7 @@ for table in page_soup.find_all('table', class_="CourseListView border hover lig
         
         course_title_container = container.find('td', width='250')
         try:
-            course_title = course_title_container.text
+            course_title = course_title_container.text.replace(",", "|")
         
         except:
             course_title = "None"
@@ -38,7 +38,7 @@ for table in page_soup.find_all('table', class_="CourseListView border hover lig
 
         points = container.find_all('td', class_="mitt")
         for point in points:
-            f.write(point.text + ",")
+            f.write(point.text.replace(",", ".") + ",")
 
         lps = container.find_all('span', class_="ttinfo")
         
